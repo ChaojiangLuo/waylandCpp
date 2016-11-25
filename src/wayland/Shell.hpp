@@ -19,13 +19,16 @@ class Shell : public Registry
 {
 public:
 
-	Shell(wl_registry* registry, uint32_t id, uint32_t version);
 	~Shell();
 
 	std::shared_ptr<ShellSurface> getShellSurface(std::shared_ptr<Surface>
 												  surface);
 
 private:
+
+	friend class Display;
+
+	Shell(wl_registry* registry, uint32_t id, uint32_t version);
 
 	wl_shell* mShell;
 	XenBackend::Log mLog;

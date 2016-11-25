@@ -20,14 +20,16 @@ class SharedBuffer
 {
 public:
 
+	~SharedBuffer();
+
+private:
+
+	friend class SharedMemory;
+	friend class Surface;
+
 	SharedBuffer(wl_shm* sharedMemory, int fd, uint32_t width, uint32_t height,
 				 uint32_t stride, uint32_t pixelFormat);
 
-	~SharedBuffer();
-
-	wl_buffer* getBuffer() const { return mBuffer; }
-
-private:
 	wl_buffer* mBuffer;
 	wl_shm_pool* mPool;
 	XenBackend::Log mLog;

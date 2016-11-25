@@ -12,21 +12,39 @@
 
 #include <xen/be/Log.hpp>
 
+#include "SharedBuffer.hpp"
+
 namespace Wayland {
 
 class Surface
 {
 public:
 
-	Surface(wl_compositor* compositor);
+	typedef std::function<void()> FrameCallback;
+
 	~Surface();
 
-	wl_surface* getWlSurface() const { return mSurface; }
+	void draw(std::shared_ptr<SharedBuffer> sharedBuffer,
+			  FrameCallback callback = nullptr);
 
-public:
+private:
+
+	friend class ShellSurface;
+	friend class Compositor;
+
+	Surface(wl_compositor* compositor);
 
 	wl_surface* mSurface;
+	wl_callback *mFrameCallback;
 	XenBackend::Log mLog;
+
+	wl_callback_listener mFrameListener;
+
+	FrameCallback mStoredCallback;
+
+	static void sFrameHandler(void *data, wl_callback *wl_callback,
+							  uint32_t callback_data);
+	void frameHandler();
 
 	void init(wl_compositor* compositor);
 	void release();

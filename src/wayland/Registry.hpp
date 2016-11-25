@@ -15,11 +15,14 @@ namespace Wayland {
 class Registry
 {
 public:
+	uint32_t getId() const { return mId; }
+
+protected:
+
 	Registry(wl_registry* registry, uint32_t id, uint32_t version) :
 		mRegistry(registry), mId(id), mVersion(version) {}
 
 	wl_registry* getRegistry() const { return mRegistry; }
-	uint32_t getId() const { return mId; }
 	uint32_t getVersion() const { return mVersion; }
 
 private:

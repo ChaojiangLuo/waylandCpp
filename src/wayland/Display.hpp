@@ -8,7 +8,9 @@
 #ifndef SRC_WAYLAND_DISPLAY_HPP_
 #define SRC_WAYLAND_DISPLAY_HPP_
 
+#include <atomic>
 #include <memory>
+#include <thread>
 
 #include <xen/be/Log.hpp>
 
@@ -25,19 +27,29 @@ public:
 	Display();
 	~Display();
 
+	void start();
+	void stop();
+
 	std::shared_ptr<Compositor> getCompositor() const;
 	std::shared_ptr<Shell> getShell() const;
 	std::shared_ptr<SharedMemory> getSharedMemory() const;
 
+	void dispatch();
+
 private:
+	const int cPoolEventTimeoutMs = 100;
+
 	wl_display* mDisplay;
 	wl_registry* mRegistry;
 	wl_registry_listener mRegistryListener;
+	std::atomic_bool mTerminate;
 	XenBackend::Log mLog;
 
 	std::shared_ptr<Compositor> mCompositor;
 	std::shared_ptr<Shell> mShell;
 	std::shared_ptr<SharedMemory> mSharedMemory;
+
+	std::thread mThread;
 
 	static void sRegistryHandler(void *data, wl_registry *registry,
 								 uint32_t id, const char *interface,
@@ -51,6 +63,9 @@ private:
 
 	void init();
 	void release();
+
+	bool pollDisplayFd();
+	void dispatchThread();
 };
 
 }

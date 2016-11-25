@@ -53,15 +53,55 @@ void ShellSurface::setTopLevel()
 /*******************************************************************************
  * Private
  ******************************************************************************/
+void ShellSurface::sPingHandler(void *data, wl_shell_surface *shell_surface,
+								uint32_t serial)
+{
+	static_cast<ShellSurface*>(data)->pingHandler(serial);
+}
+
+void ShellSurface::sConfigHandler(void *data, wl_shell_surface *shell_surface,
+								  uint32_t edges, int32_t width, int32_t height)
+{
+	static_cast<ShellSurface*>(data)->configHandler(edges, width, height);
+}
+
+void ShellSurface::sPopupDone(void *data, wl_shell_surface *shell_surface)
+{
+	static_cast<ShellSurface*>(data)->popupDone();
+}
+
+void ShellSurface::pingHandler(uint32_t serial)
+{
+	DLOG(mLog, DEBUG) << "Ping handler: " << serial;
+
+	wl_shell_surface_pong(mShellSurface, serial);
+}
+
+void ShellSurface::configHandler(uint32_t edges, int32_t width, int32_t height)
+{
+	DLOG(mLog, DEBUG) << "Config handler, edges: " << edges
+					  << ", width: " << width << ", height: " << height;
+}
+
+void ShellSurface::popupDone()
+{
+	DLOG(mLog, DEBUG) << "Popup done";
+}
 
 void ShellSurface::init(wl_shell* shell)
 {
-	mShellSurface = wl_shell_get_shell_surface(shell,
-											   mSurfacePtr->getWlSurface());
+	mShellSurface = wl_shell_get_shell_surface(shell, mSurfacePtr->mSurface);
 
 	if (!mShellSurface)
 	{
 		throw WlException("Can't create shell surface");
+	}
+
+	mListener = {sPingHandler, sConfigHandler, sPopupDone};
+
+	if (wl_shell_surface_add_listener(mShellSurface, &mListener, this) < 0)
+	{
+		throw WlException("Can't add listener");
 	}
 
 	LOG(mLog, DEBUG) << "Create";

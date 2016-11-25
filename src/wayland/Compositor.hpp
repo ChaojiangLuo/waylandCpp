@@ -21,12 +21,16 @@ class Compositor : public Registry
 {
 public:
 
-	Compositor(wl_registry* registry, uint32_t id, uint32_t version);
 	~Compositor();
 
 	std::shared_ptr<Surface> createSurface();
 
 private:
+
+	friend class Display;
+
+	Compositor(wl_registry* registry, uint32_t id, uint32_t version);
+
 	wl_compositor* mCompositor;
 	XenBackend::Log mLog;
 

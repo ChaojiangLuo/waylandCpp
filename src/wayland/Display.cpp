@@ -7,9 +7,13 @@
 
 #include "Display.hpp"
 
+#include <poll.h>
+
 #include "Exception.hpp"
 
+using std::exception;
 using std::shared_ptr;
+using std::thread;
 
 namespace Wayland {
 
@@ -20,6 +24,7 @@ namespace Wayland {
 Display::Display() :
 	mDisplay(nullptr),
 	mRegistry(nullptr),
+	mTerminate(false),
 	mLog("Display")
 {
 	try
@@ -36,6 +41,8 @@ Display::Display() :
 
 Display::~Display()
 {
+	stop();
+
 	release();
 }
 
@@ -71,6 +78,34 @@ std::shared_ptr<SharedMemory> Display::getSharedMemory() const
 	}
 
 	return mSharedMemory;
+}
+
+void Display::dispatch()
+{
+	LOG(mLog, DEBUG) << "Dispatch";
+
+	while(wl_display_dispatch(mDisplay) != -1);
+}
+
+void Display::start()
+{
+	LOG(mLog, DEBUG) << "Start";
+
+	mTerminate = false;
+
+	mThread = thread(&Display::dispatchThread, this);
+}
+
+void Display::stop()
+{
+	LOG(mLog, DEBUG) << "Stop";
+
+	mTerminate = true;
+
+	if (mThread.joinable())
+	{
+		mThread.join();
+	}
 }
 
 /*******************************************************************************
@@ -171,6 +206,70 @@ void Display::release()
 		wl_display_disconnect(mDisplay);
 
 		LOG(mLog, DEBUG) << "Disconnected";
+	}
+}
+
+bool Display::pollDisplayFd()
+{
+	pollfd fds;
+
+	fds.fd = wl_display_get_fd(mDisplay);
+	fds.events = POLLIN;
+
+	while(!mTerminate)
+	{
+		fds.revents = 0;
+
+		auto ret = poll(&fds, 1, cPoolEventTimeoutMs);
+
+		if (ret < 0)
+		{
+			throw WlException("Can't poll events");
+		}
+		else if (ret > 0)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void Display::dispatchThread()
+{
+	try
+	{
+		while(!mTerminate)
+		{
+			while (wl_display_prepare_read(mDisplay) != 0)
+			{
+				auto val = wl_display_dispatch_pending(mDisplay);
+
+				if (val < 0)
+				{
+					throw WlException("Can't dispatch pending events");
+				}
+
+				DLOG(mLog, DEBUG) << "Dispatch events: " << val;
+			}
+
+			wl_display_flush(mDisplay);
+
+			if (pollDisplayFd())
+			{
+				wl_display_read_events(mDisplay);
+			}
+			else
+			{
+				wl_display_cancel_read(mDisplay);
+			}
+		}
+	}
+	catch(const exception& e)
+	{
+		wl_display_cancel_read(mDisplay);
+
+		LOG(mLog, ERROR) << e.what();
 	}
 }
 

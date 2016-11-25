@@ -22,7 +22,6 @@ class SharedMemory : public Registry
 {
 public:
 
-	SharedMemory(wl_registry* registry, uint32_t id, uint32_t version);
 	~SharedMemory();
 
 	std::shared_ptr<SharedFile> createSharedFile(uint32_t width,
@@ -35,6 +34,10 @@ public:
 			uint32_t pixelFormat);
 
 private:
+
+	friend class Display;
+
+	SharedMemory(wl_registry* registry, uint32_t id, uint32_t version);
 
 	wl_shm* mSharedMemory;
 	XenBackend::Log mLog;

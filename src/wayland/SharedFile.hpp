@@ -16,7 +16,6 @@ class SharedFile
 {
 public:
 
-	SharedFile(uint32_t width, uint32_t height, uint32_t bpp);
 	~SharedFile();
 
 	int getFd() const { return mFd; }
@@ -29,6 +28,10 @@ public:
 	size_t getSize() const { return mSize; }
 
 private:
+
+	friend class SharedMemory;
+
+	SharedFile(uint32_t width, uint32_t height, uint32_t bpp);
 
 	constexpr static const char *cFileNameTemplate = "/weston-shared-XXXXXX";
 	constexpr static const char *cXdgRuntimeVar = "XDG_RUNTIME_DIR";
