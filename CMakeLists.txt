@@ -8,6 +8,7 @@ set(SOURCES
 	src/main.cpp
 	src/wayland/Display.cpp
 	src/wayland/Compositor.cpp
+	src/wayland/SharedFile.cpp
 	src/wayland/SharedMemory.cpp
 	src/wayland/Shell.cpp
 	src/wayland/ShellSurface.cpp

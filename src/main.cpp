@@ -20,6 +20,10 @@ int main()
 
 		auto shellSurface = display.getShell()->getShellSurface(surface);
 
+		auto sharedFile = display.getSharedMemory()->createSharedFile(320, 240, 32);
+
+		std::string str;
+		std::cin >> str;
 	}
 	catch(const exception& e)
 	{
