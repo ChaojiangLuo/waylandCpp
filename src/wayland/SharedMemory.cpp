@@ -52,6 +52,19 @@ shared_ptr<SharedFile> SharedMemory::createSharedFile(uint32_t width,
 	return shared_ptr<SharedFile>(new SharedFile(width, height, bpp));
 }
 
+shared_ptr<SharedBuffer> SharedMemory::createSharedBuffer(
+							shared_ptr<SharedFile> sharedFile,
+							uint32_t width, uint32_t height, uint32_t stride,
+							uint32_t pixelFormat)
+{
+	LOG(mLog, DEBUG) << "Create shared buffer";
+
+	return shared_ptr<SharedBuffer>(new SharedBuffer(mSharedMemory,
+													 sharedFile->getFd(),
+													 width, height, stride,
+													 pixelFormat));
+}
+
 /*******************************************************************************
  * Private
  ******************************************************************************/

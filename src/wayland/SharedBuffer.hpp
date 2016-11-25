@@ -8,25 +8,32 @@
 #ifndef SRC_WAYLAND_SHAREDBUFFER_HPP_
 #define SRC_WAYLAND_SHAREDBUFFER_HPP_
 
-#include <xen/be/Log.hpp>
+#include <memory>
 
-#include "Registry.hpp"
+#include <wayland-client.h>
+
+#include <xen/be/Log.hpp>
 
 namespace Wayland {
 
-class SharedMemory : public Registry
+class SharedBuffer
 {
 public:
 
-	SharedMemory(wl_registry* registry, uint32_t id, uint32_t version);
-	~SharedMemory();
+	SharedBuffer(wl_shm* sharedMemory, int fd, uint32_t width, uint32_t height,
+				 uint32_t stride, uint32_t pixelFormat);
+
+	~SharedBuffer();
+
+	wl_buffer* getBuffer() const { return mBuffer; }
 
 private:
-
-	wl_shm* mSharedMemory;
+	wl_buffer* mBuffer;
+	wl_shm_pool* mPool;
 	XenBackend::Log mLog;
 
-	void init();
+	void init(wl_shm* sharedMemory, int fd, uint32_t width, uint32_t height,
+			  uint32_t stride, uint32_t pixelFormat);
 	void release();
 };
 

@@ -13,6 +13,7 @@
 #include <xen/be/Log.hpp>
 
 #include "Registry.hpp"
+#include "SharedBuffer.hpp"
 #include "SharedFile.hpp"
 
 namespace Wayland {
@@ -27,6 +28,11 @@ public:
 	std::shared_ptr<SharedFile> createSharedFile(uint32_t width,
 												 uint32_t height,
 												 uint32_t bpp);
+
+	std::shared_ptr<SharedBuffer> createSharedBuffer(
+			std::shared_ptr<SharedFile> sharedFile,
+			uint32_t width, uint32_t height, uint32_t stride,
+			uint32_t pixelFormat);
 
 private:
 
