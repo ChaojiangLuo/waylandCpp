@@ -30,7 +30,7 @@ SharedFile::SharedFile(uint32_t width, uint32_t height, uint32_t bpp) :
 	mWidth(width),
 	mHeight(height),
 	mStride(4 * ((width * bpp + 31) / 32)),
-	mSize(width * height * bpp),
+	mSize(height * mStride),
 	mLog("SharedFile")
 {
 	try

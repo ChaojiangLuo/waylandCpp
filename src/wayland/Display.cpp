@@ -220,6 +220,8 @@ bool Display::pollDisplayFd()
 	{
 		fds.revents = 0;
 
+		wl_display_flush(mDisplay);
+
 		auto ret = poll(&fds, 1, cPoolEventTimeoutMs);
 
 		if (ret < 0)
@@ -252,8 +254,6 @@ void Display::dispatchThread()
 
 				DLOG(mLog, DEBUG) << "Dispatch events: " << val;
 			}
-
-			wl_display_flush(mDisplay);
 
 			if (pollDisplayFd())
 			{

@@ -65,6 +65,9 @@ void Surface::draw(std::shared_ptr<SharedBuffer> sharedBuffer,
 		throw WlException("Can't add listener");
 	}
 
+	wl_surface_damage(mSurface, 0, 0,
+					  sharedBuffer->mWidth, sharedBuffer->mHeight);
+
 	wl_surface_attach(mSurface, sharedBuffer->mBuffer, 0, 0);
 
 	wl_surface_commit(mSurface);

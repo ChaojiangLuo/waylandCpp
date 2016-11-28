@@ -21,11 +21,13 @@ SharedBuffer::SharedBuffer(wl_shm* sharedMemory, int fd, uint32_t width,
 						   uint32_t pixelFormat) :
 	mBuffer(nullptr),
 	mPool(nullptr),
+	mWidth(width),
+	mHeight(height),
 	mLog("SharedBuffer")
 {
 	try
 	{
-		init(sharedMemory, fd, width, height, stride, pixelFormat);
+		init(sharedMemory, fd, stride, pixelFormat);
 	}
 	catch(const WlException& e)
 	{
@@ -48,17 +50,17 @@ SharedBuffer::~SharedBuffer()
  * Private
  ******************************************************************************/
 
-void SharedBuffer::init(wl_shm* sharedMemory, int fd, uint32_t width,
-						uint32_t height, uint32_t stride, uint32_t pixelFormat)
+void SharedBuffer::init(wl_shm* sharedMemory, int fd,
+						uint32_t stride, uint32_t pixelFormat)
 {
-	mPool = wl_shm_create_pool(sharedMemory, fd, height * stride);
+	mPool = wl_shm_create_pool(sharedMemory, fd, mHeight * stride);
 
 	if (!mPool)
 	{
 		throw WlException("Can't create pool");
 	}
 
-	mBuffer = wl_shm_pool_create_buffer(mPool, 0, width, height, stride,
+	mBuffer = wl_shm_pool_create_buffer(mPool, 0, mWidth, mHeight, stride,
 										pixelFormat);
 
 	if (!mBuffer)
@@ -70,7 +72,7 @@ void SharedBuffer::init(wl_shm* sharedMemory, int fd, uint32_t width,
 
 	mPool = nullptr;
 
-	LOG(mLog, DEBUG) << "Create, w: " << width << ", h: " << height
+	LOG(mLog, DEBUG) << "Create, w: " << mWidth << ", h: " << mHeight
 					 << ", stride: " << stride << ", fd: " << fd
 					 << ", format: " << pixelFormat;
 }

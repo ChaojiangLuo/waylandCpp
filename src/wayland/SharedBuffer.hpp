@@ -32,10 +32,12 @@ private:
 
 	wl_buffer* mBuffer;
 	wl_shm_pool* mPool;
+	uint32_t mWidth;
+	uint32_t mHeight;
 	XenBackend::Log mLog;
 
-	void init(wl_shm* sharedMemory, int fd, uint32_t width, uint32_t height,
-			  uint32_t stride, uint32_t pixelFormat);
+	void init(wl_shm* sharedMemory, int fd, uint32_t stride,
+			  uint32_t pixelFormat);
 	void release();
 };
 
