@@ -84,7 +84,6 @@ int main()
 
 		Rgb* data1 = static_cast<Rgb*>(gSharedFile1->getBuffer());
 		Rgb* data2 = static_cast<Rgb*>(gSharedFile2->getBuffer());
-		uint8_t value = 0;
 
 		for (size_t i = 0; i < gSharedFile1->getSize() / sizeof(Rgb); i++)
 		{
