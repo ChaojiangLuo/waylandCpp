@@ -2,6 +2,8 @@
 
 #include "wayland/Display.hpp"
 
+#include "wayland/Activity.hpp"
+
 using std::exception;
 using std::shared_ptr;
 
@@ -27,6 +29,7 @@ void drawFrame(shared_ptr<SharedFile> sharedFile1,
 {
 	try
 	{
+		LOG("Main", DEBUG) << "drawFrame Buffer size: " << gSharedFile1->getSize();
 		gSurface1->draw(sharedBuffer1 , std::bind(drawFrame,
 												  sharedFile2, sharedBuffer2,
 												  sharedFile1, sharedBuffer1));
@@ -42,7 +45,7 @@ int main()
 	try
 	{
 		XenBackend::Log::setLogLevel("DEBUG");
-
+/*
 		Display display;
 
 		display.start();
@@ -105,6 +108,12 @@ int main()
 
 		gSurface2->draw(gSharedBuffer2);
 
+		std::string str;
+		std::cin >> str;
+*/	
+		Activity activity(Rect(320, 240));
+		activity.updateData(Rgb(0xFF, 0x00, 0x00, 0x00));
+		activity.draw();
 		std::string str;
 		std::cin >> str;
 	}

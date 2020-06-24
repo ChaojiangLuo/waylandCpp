@@ -17,6 +17,7 @@
 #include "Compositor.hpp"
 #include "SharedMemory.hpp"
 #include "Shell.hpp"
+#include "Seat.hpp"
 
 namespace Wayland {
 
@@ -48,6 +49,7 @@ private:
 	std::shared_ptr<Compositor> mCompositor;
 	std::shared_ptr<Shell> mShell;
 	std::shared_ptr<SharedMemory> mSharedMemory;
+	std::shared_ptr<Seat> mSeat;
 
 	std::thread mThread;
 

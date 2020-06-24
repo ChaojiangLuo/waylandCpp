@@ -131,19 +131,24 @@ void Display::registryHandler(wl_registry *registry, uint32_t id,
 	LOG(mLog, DEBUG) << "Registry event, itf: " << interface << ", id: " << id
 					 << ", version: " << version;
 
-	if (interface == "wl_compositor")
+	if (interface == wl_compositor_interface.name)
 	{
 		mCompositor.reset(new Compositor(registry, id, version));
 	}
 
-	if (interface == "wl_shell")
+	if (interface == wl_shell_interface.name)
 	{
 		mShell.reset(new Shell(registry, id, version));
 	}
 
-	if (interface == "wl_shm")
+	if (interface == wl_shm_interface.name)
 	{
 		mSharedMemory.reset(new SharedMemory(registry, id, version));
+	}
+
+	if (interface == wl_seat_interface.name)
+	{
+		mSeat.reset(new Seat(registry, id, version));
 	}
 }
 

@@ -14,6 +14,8 @@ set(SOURCES
 	src/wayland/Shell.cpp
 	src/wayland/ShellSurface.cpp
 	src/wayland/Surface.cpp
+	src/wayland/Seat.cpp
+	src/wayland/Activity.cpp
 )
 
 include_directories(

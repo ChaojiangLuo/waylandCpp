@@ -16,6 +16,11 @@
 
 namespace Wayland {
 
+class FrameCallbackListener {
+public:
+	virtual void onFrameDisplayed() = 0;
+};
+
 class Surface
 {
 public:
@@ -27,6 +32,9 @@ public:
 	void draw(std::shared_ptr<SharedBuffer> sharedBuffer,
 			  FrameCallback callback = nullptr);
 
+	void setListener(FrameCallbackListener* listener) {
+		mListener = listener;
+	}
 private:
 
 	friend class ShellSurface;
@@ -41,6 +49,8 @@ private:
 	wl_callback_listener mFrameListener;
 
 	FrameCallback mStoredCallback;
+
+	FrameCallbackListener* mListener;
 
 	static void sFrameHandler(void *data, wl_callback *wl_callback,
 							  uint32_t callback_data);

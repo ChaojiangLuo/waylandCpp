@@ -68,6 +68,20 @@ void Surface::draw(std::shared_ptr<SharedBuffer> sharedBuffer,
 		}
 	}
 
+	if (mListener) {
+		mFrameCallback = wl_surface_frame(mSurface);
+
+		if (!mFrameCallback)
+		{
+			throw WlException("Can't get frame callback");
+		}
+
+		if (wl_callback_add_listener(mFrameCallback, &mFrameListener, this) < 0)
+		{
+			throw WlException("Can't add listener");
+		}
+	}
+
 	wl_surface_damage(mSurface, 0, 0,
 					  sharedBuffer->mWidth, sharedBuffer->mHeight);
 
@@ -96,6 +110,11 @@ void Surface::frameHandler()
 	if (mStoredCallback)
 	{
 		mStoredCallback();
+	}
+
+	if (mListener)
+	{
+		mListener->onFrameDisplayed();
 	}
 }
 
