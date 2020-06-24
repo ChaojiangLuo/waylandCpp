@@ -31,4 +31,4 @@ link_directories(
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} xenbe xenctrl xenstore xenevtchn xengnttab wayland-client pthread)
+target_link_libraries(${PROJECT_NAME} wayland-client pthread)

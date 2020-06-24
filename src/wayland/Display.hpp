@@ -12,7 +12,7 @@
 #include <memory>
 #include <thread>
 
-#include <xen/be/Log.hpp>
+#include "Log.hpp"
 
 #include "Compositor.hpp"
 #include "SharedMemory.hpp"

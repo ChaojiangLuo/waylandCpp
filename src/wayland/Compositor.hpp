@@ -10,7 +10,7 @@
 
 #include <memory>
 
-#include <xen/be/Log.hpp>
+#include "Log.hpp"
 
 #include "Registry.hpp"
 #include "Surface.hpp"

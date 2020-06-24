@@ -8,7 +8,7 @@
 #ifndef SRC_WAYLAND_SHELL_HPP_
 #define SRC_WAYLAND_SHELL_HPP_
 
-#include <xen/be/Log.hpp>
+#include "Log.hpp"
 
 #include "Registry.hpp"
 #include "ShellSurface.hpp"

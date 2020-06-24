@@ -8,7 +8,7 @@
 #ifndef SRC_WAYLAND_SHAREDFILE_HPP_
 #define SRC_WAYLAND_SHAREDFILE_HPP_
 
-#include <xen/be/Log.hpp>
+#include "Log.hpp"
 
 namespace Wayland {
 

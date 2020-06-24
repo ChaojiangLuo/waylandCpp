@@ -12,7 +12,7 @@
 
 #include <wayland-client.h>
 
-#include <xen/be/Log.hpp>
+#include "Log.hpp"
 
 namespace Wayland {
 
