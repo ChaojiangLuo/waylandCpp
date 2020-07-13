@@ -1,6 +1,7 @@
 #ifndef SRC_WAYLAND_SEAT_HPP_
 #define SRC_WAYLAND_SEAT_HPP_
 
+#include "Keyboard.hpp"
 #include "Log.hpp"
 
 #include "Registry.hpp"
@@ -11,7 +12,7 @@ namespace Wayland
     {
     public:
         ~Seat();
-
+        wl_seat* seat();
     private:
         friend class Display;
 
@@ -19,6 +20,8 @@ namespace Wayland
 
         wl_seat *mSeat;
         XenBackend::Log mLog;
+
+        Keyboard* mKeyboard;
 
         void init();
         void release();

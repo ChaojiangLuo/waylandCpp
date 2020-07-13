@@ -1,5 +1,6 @@
-#include "Exception.hpp"
+#include <assert.h>
 
+#include "Exception.hpp"
 #include "Seat.hpp"
 
 namespace Wayland
@@ -25,6 +26,10 @@ namespace Wayland
         release();
     }
 
+    wl_seat* Seat::seat() {
+        return mSeat;
+    }
+
     /*******************************************************************************
     * Private
     ******************************************************************************/
@@ -39,6 +44,8 @@ namespace Wayland
             throw WlException("Can't bind seat");
         }
 
+        mKeyboard = new Keyboard(this);
+
         LOG(mLog, DEBUG) << "Create";
     }
 
@@ -49,6 +56,11 @@ namespace Wayland
             wl_seat_destroy(mSeat);
 
             LOG(mLog, DEBUG) << "Delete";
+        }
+
+        if (mKeyboard) {
+            delete mKeyboard;
+            mKeyboard = nullptr;
         }
     }
 } // namespace Wayland

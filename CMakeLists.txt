@@ -15,6 +15,7 @@ set(SOURCES
 	src/wayland/ShellSurface.cpp
 	src/wayland/Surface.cpp
 	src/wayland/Seat.cpp
+	src/wayland/Keyboard.cpp
 	src/wayland/Activity.cpp
 )
 
