@@ -28,6 +28,7 @@ ShellSurface::ShellSurface(wl_shell* shell, shared_ptr<Surface> surface) :
 	}
 	catch(const WlException& e)
 	{
+		LOG(mLog, DEBUG) << "init failed " << e.what();
 		release();
 
 		throw;

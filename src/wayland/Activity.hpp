@@ -42,29 +42,34 @@ public:
     }
 };
 
-class Rgb
+struct Rgba
 {
-public:
+    uint8_t x;
     uint8_t r;
     uint8_t g;
     uint8_t b;
-    uint8_t a;
+};
+
+class FormatInfo
+{
+public:
+    Rgba rgb;
 
     uint32_t bpp;
 
     uint32_t pixelFormat;
-    Rgb()
+    FormatInfo()
     {
         bpp = 32;
         pixelFormat = WL_SHM_FORMAT_XRGB8888;
     }
 
-    Rgb(uint8_t ir, uint8_t ig, uint8_t ib, uint8_t ia)
+    FormatInfo(uint8_t ix, uint8_t ir, uint8_t ig, uint8_t ib)
     {
-        r = ir;
-        g = ig;
-        b = ib;
-        a = ia;
+        rgb.x = ix;
+        rgb.r = ir;
+        rgb.g = ig;
+        rgb.b = ib;
 
         bpp = 32;
         pixelFormat = WL_SHM_FORMAT_XRGB8888;
@@ -81,7 +86,9 @@ private:
 
 public:
     Rect mRect;
-    Rgb mRgb;
+    FormatInfo mFormatInfo;
+
+    XenBackend::Log mLog;
 
     Activity(Rect r);
     ~Activity();
@@ -92,7 +99,7 @@ public:
     void draw();
     void onFrameDisplayed();
 
-    void updateData(Rgb rgb);
+    void updateData(FormatInfo finfo);
 };
 
 #endif

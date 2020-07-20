@@ -4,7 +4,7 @@
 
 using std::exception;
 
-Activity::Activity(Rect r) : mRect(r)
+Activity::Activity(Rect r) : mRect(r), mLog("Activity")
 {
     init();
 }
@@ -27,11 +27,13 @@ void Activity::init()
 
     shellSurface->setTopLevel();
 
-    mSharedFile = mDisplay->getSharedMemory()->createSharedFile(mRect.width, mRect.height, mRgb.bpp);
+    mSharedFile = mDisplay->getSharedMemory()->createSharedFile(mRect.width, mRect.height, mFormatInfo.bpp);
 
     mSharedBuffer = mDisplay->getSharedMemory()->createSharedBuffer(mSharedFile, mRect.width, mRect.height,
                                                                     mSharedFile->getStride(),
-                                                                    mRgb.pixelFormat);
+                                                                    mFormatInfo.pixelFormat);
+
+    LOG(mLog, DEBUG) << "Buffer size: " << mSharedFile->getSize();
 }
 
 void Activity::release()
@@ -43,30 +45,30 @@ void Activity::draw()
 {
     try
     {
-        LOG("Main", DEBUG) << "drawFrame Buffer size: " << mSharedFile->getSize();
+        LOG(mLog, DEBUG) << "drawFrame Buffer size: " << mSharedFile->getSize();
         mSurface->draw(mSharedBuffer);
     }
     catch (const exception &e)
     {
-        LOG("Main", ERROR) << e.what();
+        LOG(mLog, ERROR) << e.what();
     }
 }
 
 void Activity::onFrameDisplayed()
 {
-    //updateData(Rgb(0xFF, 0x00, 0x00, 0x00));
+    updateData(FormatInfo(0x00, 0xff, 0x00, 0x00)); //xrgb
     draw();
 }
 
-void Activity::updateData(Rgb rgb)
+void Activity::updateData(FormatInfo finfo)
 {
-    Rgb *data = static_cast<Rgb *>(mSharedFile->getBuffer());
+    Rgba *data = static_cast<Rgba *>(mSharedFile->getBuffer());
 
-    for (size_t i = 0; i < mSharedFile->getSize() / sizeof(Rgb); i++)
+    for (size_t i = 0; i < mSharedFile->getSize() / sizeof(Rgba); i++)
     {
-        data[i].a = rgb.a;
-        data[i].r = rgb.r;
-        data[i].g = rgb.g;
-        data[i].b = rgb.b;
+        data[i].x = finfo.rgb.x;
+        data[i].r = finfo.rgb.r;
+        data[i].g = finfo.rgb.g;
+        data[i].b = finfo.rgb.b;
     }
 }
