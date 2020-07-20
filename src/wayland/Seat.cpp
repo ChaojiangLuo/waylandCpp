@@ -26,7 +26,8 @@ namespace Wayland
         release();
     }
 
-    wl_seat* Seat::seat() {
+    wl_seat *Seat::seat()
+    {
         return mSeat;
     }
 
@@ -46,21 +47,30 @@ namespace Wayland
 
         mKeyboard = new Keyboard(this);
 
+        mPointer = new Pointer(this);
+
         LOG(mLog, DEBUG) << "Create";
     }
 
     void Seat::release()
     {
+        if (mKeyboard)
+        {
+            delete mKeyboard;
+            mKeyboard = nullptr;
+        }
+
+        if (mPointer)
+        {
+            delete mPointer;
+            mPointer = nullptr;
+        }
+
         if (mSeat)
         {
             wl_seat_destroy(mSeat);
 
             LOG(mLog, DEBUG) << "Delete";
-        }
-
-        if (mKeyboard) {
-            delete mKeyboard;
-            mKeyboard = nullptr;
         }
     }
 } // namespace Wayland

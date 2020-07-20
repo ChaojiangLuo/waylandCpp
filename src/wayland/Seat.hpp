@@ -3,6 +3,7 @@
 
 #include "Keyboard.hpp"
 #include "Log.hpp"
+#include "Pointer.hpp"
 
 #include "Registry.hpp"
 
@@ -22,6 +23,8 @@ namespace Wayland
         XenBackend::Log mLog;
 
         Keyboard* mKeyboard;
+
+        Pointer* mPointer;
 
         void init();
         void release();

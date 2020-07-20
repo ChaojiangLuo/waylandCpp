@@ -13,18 +13,20 @@ namespace Wayland
         wl_keyboard *mKeyboard;
         static const wl_keyboard_listener s_listener;
 
-        Seat* mSeat;
+        Seat *mSeat;
         XenBackend::Log mLog;
 
         void init();
         void release();
+
     public:
-        enum class KeyState {
+        enum class KeyState
+        {
             Released,
             Pressed
         };
 
-        Keyboard(Seat* seat);
+        Keyboard(Seat *seat);
         ~Keyboard();
 
         static void keymapCallback(void *data, wl_keyboard *keyboard, uint32_t format, int fd, uint32_t size);

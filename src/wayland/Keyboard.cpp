@@ -6,7 +6,7 @@
 
 namespace Wayland
 {
-    Keyboard::Keyboard(Seat* seat) : mSeat(seat), mLog("Keyboard")
+    Keyboard::Keyboard(Seat *seat) : mSeat(seat), mLog("Keyboard")
     {
         try
         {
@@ -18,6 +18,11 @@ namespace Wayland
 
             throw;
         }
+    }
+
+    Keyboard::~Keyboard()
+    {
+        release();
     }
 
     void Keyboard::keymapCallback(void *data, wl_keyboard *keyboard, uint32_t format, int fd, uint32_t size)
@@ -98,8 +103,7 @@ namespace Wayland
         leaveCallback,
         keyCallback,
         modifiersCallback,
-        repeatInfoCallback
-    };
+        repeatInfoCallback};
 
     /*******************************************************************************
     * Private
@@ -108,6 +112,12 @@ namespace Wayland
     {
         mKeyboard = wl_seat_get_keyboard(mSeat->seat());
 
+        if (!mKeyboard)
+        {
+            LOG(mLog, DEBUG) << "wl_seat_get_keyboard failed";
+            return;
+        }
+
         wl_keyboard_add_listener(mKeyboard, &s_listener, this);
 
         LOG(mLog, DEBUG) << "Create";
@@ -115,7 +125,8 @@ namespace Wayland
 
     void Keyboard::release()
     {
-        if (mKeyboard) {
+        if (mKeyboard)
+        {
             wl_keyboard_release(mKeyboard);
             LOG(mLog, DEBUG) << "Delete";
         }
