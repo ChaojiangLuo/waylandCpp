@@ -26,6 +26,7 @@ void Activity::init()
     auto shellSurface = mDisplay->getShell()->getShellSurface(mSurface);
 
     shellSurface->setTopLevel();
+    shellSurface->setTitle(mName);
 
     mSharedFile = mDisplay->getSharedMemory()->createSharedFile(mRect.width, mRect.height, mFormatInfo.bpp);
 

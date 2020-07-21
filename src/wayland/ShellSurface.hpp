@@ -26,6 +26,8 @@ public:
 
 	void setTopLevel();
 
+	void setTitle(std::string name);
+
 	std::shared_ptr<Surface> getSurface() const { return mSurfacePtr; }
 
 public:

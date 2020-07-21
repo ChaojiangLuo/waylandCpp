@@ -51,6 +51,10 @@ void ShellSurface::setTopLevel()
 	wl_shell_surface_set_toplevel(mShellSurface);
 }
 
+void ShellSurface::setTitle(std::string name) {
+	wl_shell_surface_set_title(mShellSurface, name.c_str());
+}
+
 /*******************************************************************************
  * Private
  ******************************************************************************/
