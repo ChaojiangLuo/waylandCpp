@@ -6,12 +6,15 @@
 #include "Display.hpp"
 #include "Surface.hpp"
 #include "SharedFile.hpp"
+#include "Pointer.hpp"
 
 using Wayland::Display;
 using Wayland::FrameCallbackListener;
 using Wayland::SharedBuffer;
 using Wayland::SharedFile;
 using Wayland::Surface;
+using Wayland::Pointer;
+using Wayland::PointerListener;
 
 class Rect
 {
@@ -76,13 +79,16 @@ public:
     }
 };
 
-class Activity : public FrameCallbackListener
+class Activity : public FrameCallbackListener, public PointerListener
 {
 private:
+    std::string mName;
+
     std::shared_ptr<Display> mDisplay;
     std::shared_ptr<Surface> mSurface;
     std::shared_ptr<SharedFile> mSharedFile;
     std::shared_ptr<SharedBuffer> mSharedBuffer;
+    std::shared_ptr<Pointer> mPointer;
 
 public:
     Rect mRect;
@@ -100,6 +106,9 @@ public:
     void onFrameDisplayed();
 
     void updateData(FormatInfo finfo);
+
+    int mMask = 0xFF;
+    void buttonStateChanged(uint32_t serial, uint32_t time, uint32_t button, bool pressed);
 };
 
 #endif

@@ -47,7 +47,7 @@ namespace Wayland
 
         mKeyboard = new Keyboard(this);
 
-        mPointer = new Pointer(this);
+        mPointer.reset(new Pointer(this));
 
         LOG(mLog, DEBUG) << "Create";
     }
@@ -62,8 +62,7 @@ namespace Wayland
 
         if (mPointer)
         {
-            delete mPointer;
-            mPointer = nullptr;
+            mPointer.reset();
         }
 
         if (mSeat)

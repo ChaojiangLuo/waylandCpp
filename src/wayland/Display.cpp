@@ -108,6 +108,13 @@ void Display::stop()
 	}
 }
 
+shared_ptr<Pointer> Display::pointer() {
+	if (mSeat) {
+		return mSeat->mPointer;
+	}
+	return nullptr;
+}
+
 /*******************************************************************************
  * Private
  ******************************************************************************/

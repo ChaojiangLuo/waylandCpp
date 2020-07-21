@@ -37,6 +37,8 @@ public:
 
 	void dispatch();
 
+	std::shared_ptr<Pointer> pointer();
+
 private:
 	const int cPoolEventTimeoutMs = 100;
 

@@ -4,7 +4,7 @@
 
 using std::exception;
 
-Activity::Activity(Rect r) : mRect(r), mLog("Activity")
+Activity::Activity(Rect r) : mRect(r), mLog("Activity"), mName("unamed-Activity")
 {
     init();
 }
@@ -33,6 +33,12 @@ void Activity::init()
                                                                     mSharedFile->getStride(),
                                                                     mFormatInfo.pixelFormat);
 
+    mPointer = mDisplay->pointer();
+    if (mPointer)
+    {
+        mPointer->addPointerListener(mName, this);
+    }
+
     LOG(mLog, DEBUG) << "Buffer size: " << mSharedFile->getSize();
 }
 
@@ -56,7 +62,7 @@ void Activity::draw()
 
 void Activity::onFrameDisplayed()
 {
-    updateData(FormatInfo(0x00, 0xff, 0x00, 0x00)); //xrgb
+    updateData(FormatInfo(mMask & 0xFF, mMask >> 8 & 0xFF, mMask >> 16 & 0xFF, mMask >> 24 & 0xFF)); //xrgb
     draw();
 }
 
@@ -70,5 +76,17 @@ void Activity::updateData(FormatInfo finfo)
         data[i].r = finfo.rgb.r;
         data[i].g = finfo.rgb.g;
         data[i].b = finfo.rgb.b;
+    }
+}
+
+void Activity::buttonStateChanged(uint32_t serial, uint32_t time, uint32_t button, bool pressed)
+{
+    if (pressed)
+    {
+        mMask = mMask << 8;
+    }
+    if ((mMask & 0xFFFFFFFF) == 0x0)
+    {
+        mMask = 0xFF;
     }
 }

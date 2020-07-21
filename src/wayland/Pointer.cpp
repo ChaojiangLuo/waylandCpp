@@ -55,6 +55,8 @@ namespace Wayland
         assert(p->mPointer == pointer);
 
         DLOG(p->mLog, DEBUG) << "ut-gfx-wl:" << __func__ << " " << serial << " " << time << " " << button << " " << state;
+
+        p->buttonStateChanged(serial, time, button, state == WL_POINTER_BUTTON_STATE_RELEASED);
     }
 
     void Pointer::axisCallback(void *data, wl_pointer *pointer, uint32_t time, uint32_t axis, wl_fixed_t value)
@@ -95,6 +97,26 @@ namespace Wayland
         assert(p->mPointer == pointer);
 
         DLOG(p->mLog, DEBUG) << "ut-gfx-wl:" << __func__ << " " << discrete << " " << axis;
+    }
+
+    int Pointer::addPointerListener(std::string name, PointerListener *listener)
+    {
+        int ret = 0;
+        if (mListerMap.find(name) != mListerMap.end())
+        {
+            mListerMap.erase(name);
+            ret = 1;
+        }
+        mListerMap.emplace(name, listener);
+        return ret;
+    }
+
+    void Pointer::buttonStateChanged(uint32_t serial, uint32_t time, uint32_t button, bool pressed)
+    {
+        for (auto iter = mListerMap.begin(); iter != mListerMap.end(); ++iter)
+        {
+            iter->second->buttonStateChanged(serial, time, button, pressed);
+        }
     }
 
     /*******************************************************************************

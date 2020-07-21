@@ -1,6 +1,8 @@
 #ifndef SRC_WAYLAND_SEAT_HPP_
 #define SRC_WAYLAND_SEAT_HPP_
 
+#include <memory>
+
 #include "Keyboard.hpp"
 #include "Log.hpp"
 #include "Pointer.hpp"
@@ -24,7 +26,7 @@ namespace Wayland
 
         Keyboard* mKeyboard;
 
-        Pointer* mPointer;
+        std::shared_ptr<Pointer> mPointer;
 
         void init();
         void release();

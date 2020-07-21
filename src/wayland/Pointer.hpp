@@ -1,6 +1,9 @@
 #ifndef SRC_WAYLAND_POINTER_HPP_
 #define SRC_WAYLAND_POINTER_HPP_
 
+#include <list>
+#include <unordered_map>
+
 #include "Log.hpp"
 #include <wayland-client.h>
 
@@ -17,6 +20,12 @@ namespace Wayland
         wl_surface *target_surface;
     };
 
+    class PointerListener
+    {
+    public:
+        virtual void buttonStateChanged(uint32_t serial, uint32_t time, uint32_t button, bool pressed) = 0;
+    };
+
     class Pointer
     {
     private:
@@ -28,6 +37,8 @@ namespace Wayland
 
         void init();
         void release();
+
+        std::unordered_map<std::string, PointerListener *> mListerMap;
 
     public:
         Pointer(Seat *seat);
@@ -44,6 +55,11 @@ namespace Wayland
         static void axisSourceCallback(void *data, wl_pointer *pointer, uint32_t axis_source);
         static void axisStopCallback(void *data, wl_pointer *pointer, uint32_t time, uint32_t axis);
         static void axisDiscreteCallback(void *data, wl_pointer *pointer, uint32_t axis, int32_t discrete);
+
+
+        void buttonStateChanged(uint32_t serial, uint32_t time, uint32_t button, bool pressed);
+
+        int addPointerListener(std::string name, PointerListener *listener);
     };
 } // namespace Wayland
 
