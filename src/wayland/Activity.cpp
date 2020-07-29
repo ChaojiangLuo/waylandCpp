@@ -23,10 +23,10 @@ void Activity::init()
     mSurface = mDisplay->getCompositor()->createSurface();
     mSurface->setListener(this);
 
-    auto shellSurface = mDisplay->getShell()->getShellSurface(mSurface);
+    mShellSurface = mDisplay->getShell()->getShellSurface(mSurface);
 
-    shellSurface->setTopLevel();
-    shellSurface->setTitle(mName);
+    mShellSurface->setTopLevel();
+    mShellSurface->setTitle(mName);
 
     mSharedFile = mDisplay->getSharedMemory()->createSharedFile(mRect.width, mRect.height, mFormatInfo.bpp);
 
@@ -80,8 +80,12 @@ void Activity::updateData(FormatInfo finfo)
     }
 }
 
-void Activity::buttonStateChanged(uint32_t serial, uint32_t time, uint32_t button, bool pressed)
+void Activity::pointerButton(uint32_t serial, uint32_t time, uint32_t button, bool pressed)
 {
+    mPressed = pressed;
+
+    LOG(mLog, DEBUG) << __func__ << " " << mPressed;
+
     if (pressed)
     {
         mMask = mMask << 8;
@@ -89,5 +93,17 @@ void Activity::buttonStateChanged(uint32_t serial, uint32_t time, uint32_t butto
     if ((mMask & 0xFFFFFFFF) == 0x0)
     {
         mMask = 0xFF;
+    }
+}
+
+void Activity::pointerMotion(uint32_t time, wl_fixed_t sx, wl_fixed_t sy)
+{
+    LOG(mLog, DEBUG) << __func__ << " " << mPressed;
+    if (mShellSurface)
+    {
+        if (mPressed)
+        {
+            mShellSurface->move(mDisplay->getSeat().get(), mSerial);
+        }
     }
 }

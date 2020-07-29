@@ -15,45 +15,56 @@
 #include "Log.hpp"
 
 #include "Surface.hpp"
+#include "Seat.hpp"
 
-namespace Wayland {
-
-class ShellSurface
+namespace Wayland
 {
-public:
 
-	~ShellSurface();
+	class ShellSurface
+	{
+	public:
+		~ShellSurface();
 
-	void setTopLevel();
+		void setTopLevel();
 
-	void setTitle(std::string name);
+		void setTitle(std::string name);
 
-	std::shared_ptr<Surface> getSurface() const { return mSurfacePtr; }
+		void pong(uint32_t serial);
+		void move(Seat *seat, uint32_t serial);
+		void resize(Seat *seat, uint32_t serial, uint32_t edges);
+		void setTransient(Surface *parent, int32_t x, int32_t y, uint32_t flags);
+		void setFullscreen(uint32_t method, uint32_t framerate,
+						   struct wl_output *output);
+		void setPopup(Seat *seat, uint32_t serial, Surface *parent, int32_t x,
+					  int32_t y, uint32_t flags);
+		void setMaximized(struct wl_output *output);
+		void setClass(const char *class_);
 
-public:
+		std::shared_ptr<Surface> getSurface() const { return mSurfacePtr; }
 
-	ShellSurface(wl_shell* shell, std::shared_ptr<Surface> surface);
+	public:
+		ShellSurface(wl_shell *shell, std::shared_ptr<Surface> surface);
 
-	wl_shell_surface* mShellSurface;
-	std::shared_ptr<Surface> mSurfacePtr;
-	wl_shell_surface_listener mListener;
+		wl_shell_surface *mShellSurface;
+		std::shared_ptr<Surface> mSurfacePtr;
+		wl_shell_surface_listener mListener;
 
-	XenBackend::Log mLog;
+		XenBackend::Log mLog;
 
-	static void sPingHandler(void *data, wl_shell_surface *shell_surface,
-							 uint32_t serial);
-	static void sConfigHandler(void *data, wl_shell_surface *shell_surface,
-							   uint32_t edges, int32_t width, int32_t height);
-	static void sPopupDone(void *data, wl_shell_surface *shell_surface);
+		static void sPingHandler(void *data, wl_shell_surface *shell_surface,
+								 uint32_t serial);
+		static void sConfigHandler(void *data, wl_shell_surface *shell_surface,
+								   uint32_t edges, int32_t width, int32_t height);
+		static void sPopupDone(void *data, wl_shell_surface *shell_surface);
 
-	void pingHandler(uint32_t serial);
-	void configHandler(uint32_t edges, int32_t width, int32_t height);
-	void popupDone();
+		void pingHandler(uint32_t serial);
+		void configHandler(uint32_t edges, int32_t width, int32_t height);
+		void popupDone();
 
-	void init(wl_shell* shell);
-	void release();
-};
+		void init(wl_shell *shell);
+		void release();
+	};
 
-}
+} // namespace Wayland
 
 #endif /* SRC_WAYLAND_SHELLSURFACE_HPP_ */

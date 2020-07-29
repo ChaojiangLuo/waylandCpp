@@ -10,11 +10,12 @@
 
 using Wayland::Display;
 using Wayland::FrameCallbackListener;
+using Wayland::Pointer;
+using Wayland::PointerListener;
 using Wayland::SharedBuffer;
 using Wayland::SharedFile;
 using Wayland::Surface;
-using Wayland::Pointer;
-using Wayland::PointerListener;
+using Wayland::ShellSurface;
 
 class Rect
 {
@@ -86,6 +87,7 @@ private:
 
     std::shared_ptr<Display> mDisplay;
     std::shared_ptr<Surface> mSurface;
+    std::shared_ptr<ShellSurface> mShellSurface;
     std::shared_ptr<SharedFile> mSharedFile;
     std::shared_ptr<SharedBuffer> mSharedBuffer;
     std::shared_ptr<Pointer> mPointer;
@@ -108,7 +110,18 @@ public:
     void updateData(FormatInfo finfo);
 
     int mMask = 0xFF;
-    void buttonStateChanged(uint32_t serial, uint32_t time, uint32_t button, bool pressed);
+    uint32_t mSerial;
+    bool mPressed;
+
+    void pointerEnter(uint32_t serial, wl_surface *surface, wl_fixed_t sx, wl_fixed_t sy){ mSerial = serial;};
+    void pointerLeave(uint32_t serial, wl_surface *surface){mPressed = false;};
+    void pointerMotion(uint32_t time, wl_fixed_t sx, wl_fixed_t sy);
+    void pointerButton(uint32_t serial, uint32_t time, uint32_t button, bool pressed);
+    void pointerAxis(uint32_t time, uint32_t axis, wl_fixed_t value){};
+    void pointerFrame(){};
+    void pointerAxisSource(uint32_t axis_source){};
+    void pointerAxisStop(uint32_t time, uint32_t axis){};
+    void pointerAxisDiscrete(uint32_t axis, int32_t discrete){};
 };
 
 #endif

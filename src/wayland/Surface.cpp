@@ -41,6 +41,10 @@ Surface::~Surface()
  * Public
  ******************************************************************************/
 
+wl_surface* Surface::surface() {
+	return mSurface;
+}
+
 void Surface::draw(std::shared_ptr<SharedBuffer> sharedBuffer,
 				   FrameCallback callback)
 {

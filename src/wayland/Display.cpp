@@ -80,6 +80,10 @@ std::shared_ptr<SharedMemory> Display::getSharedMemory() const
 	return mSharedMemory;
 }
 
+std::shared_ptr<Seat> Display::getSeat() {
+	return mSeat;
+}
+
 void Display::dispatch()
 {
 	LOG(mLog, DEBUG) << "Dispatch";

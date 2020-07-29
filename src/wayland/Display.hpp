@@ -34,6 +34,7 @@ public:
 	std::shared_ptr<Compositor> getCompositor() const;
 	std::shared_ptr<Shell> getShell() const;
 	std::shared_ptr<SharedMemory> getSharedMemory() const;
+	std::shared_ptr<Seat> getSeat();
 
 	void dispatch();
 

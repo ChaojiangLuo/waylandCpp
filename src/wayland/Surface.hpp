@@ -29,12 +29,15 @@ public:
 
 	~Surface();
 
+	wl_surface* surface();
+
 	void draw(std::shared_ptr<SharedBuffer> sharedBuffer,
 			  FrameCallback callback = nullptr);
 
 	void setListener(FrameCallbackListener* listener) {
 		mListener = listener;
 	}
+
 private:
 
 	friend class ShellSurface;
