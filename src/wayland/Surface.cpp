@@ -94,6 +94,25 @@ void Surface::draw(std::shared_ptr<SharedBuffer> sharedBuffer,
 	wl_surface_commit(mSurface);
 }
 
+void Surface::requestDraw(std::shared_ptr<SharedBuffer> sharedBuffer,
+				   FrameCallback callback) {
+	DLOG(mLog, DEBUG) << "requestDraw";
+
+	if (mListener) {
+		mFrameCallback = wl_surface_frame(mSurface);
+
+		if (!mFrameCallback)
+		{
+			throw WlException("Can't get frame callback");
+		}
+
+		if (wl_callback_add_listener(mFrameCallback, &mFrameListener, this) < 0)
+		{
+			throw WlException("Can't add listener");
+		}
+	}
+}
+
 /*******************************************************************************
  * Private
  ******************************************************************************/

@@ -40,6 +40,12 @@ void Activity::init()
         mPointer->addPointerListener(mName, this);
     }
 
+    mEglWrapper.reset(new EglWrapper(mDisplay));
+    mEglWrapper->init(this);
+
+    mGLRender.reset(new OpenGLRender(mDisplay));
+    mGLRender->init(this);
+
     LOG(mLog, DEBUG) << "Buffer size: " << mSharedFile->getSize();
 }
 
@@ -53,7 +59,11 @@ void Activity::draw()
     try
     {
         LOG(mLog, DEBUG) << "drawFrame Buffer size: " << mSharedFile->getSize();
-        mSurface->draw(mSharedBuffer);
+        while (true)
+        {
+            mGLRender->render(this, 0);
+            wl_display_dispatch_pending(mDisplay->display());
+        }
     }
     catch (const exception &e)
     {
@@ -63,7 +73,8 @@ void Activity::draw()
 
 void Activity::onFrameDisplayed()
 {
-    updateData(FormatInfo(mMask & 0xFF, mMask >> 8 & 0xFF, mMask >> 16 & 0xFF, mMask >> 24 & 0xFF)); //xrgb
+    wl_display_dispatch_pending(mDisplay->display());
+    LOG(mLog, DEBUG) << "onFrameDisplayed Buffer size: " << mSharedFile->getSize();
     draw();
 }
 
@@ -79,6 +90,11 @@ void Activity::updateData(FormatInfo finfo)
         data[i].b = finfo.rgb.b;
     }
 }
+
+void Activity::pointerLeave(uint32_t serial, wl_surface *surface)
+{
+    mPressed = false;
+};
 
 void Activity::pointerButton(uint32_t serial, uint32_t time, uint32_t button, bool pressed)
 {

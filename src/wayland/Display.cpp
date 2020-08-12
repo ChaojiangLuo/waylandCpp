@@ -84,6 +84,10 @@ std::shared_ptr<Seat> Display::getSeat() {
 	return mSeat;
 }
 
+wl_display* Display::display() {
+	return mDisplay;
+}
+
 void Display::dispatch()
 {
 	LOG(mLog, DEBUG) << "Dispatch";

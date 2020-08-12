@@ -3,10 +3,12 @@
 
 #include <iostream>
 
-#include "Display.hpp"
-#include "Surface.hpp"
-#include "SharedFile.hpp"
-#include "Pointer.hpp"
+#include "wayland/Display.hpp"
+#include "wayland/Surface.hpp"
+#include "wayland/SharedFile.hpp"
+#include "wayland/Pointer.hpp"
+#include "egl/EglWrapper.hpp"
+#include "opengl/OpenGLRender.hpp"
 
 using Wayland::Display;
 using Wayland::FrameCallbackListener;
@@ -14,8 +16,10 @@ using Wayland::Pointer;
 using Wayland::PointerListener;
 using Wayland::SharedBuffer;
 using Wayland::SharedFile;
-using Wayland::Surface;
 using Wayland::ShellSurface;
+using Wayland::Surface;
+using egl::EglWrapper;
+using gl::OpenGLRender;
 
 class Rect
 {
@@ -92,6 +96,10 @@ private:
     std::shared_ptr<SharedBuffer> mSharedBuffer;
     std::shared_ptr<Pointer> mPointer;
 
+    std::shared_ptr<EglWrapper> mEglWrapper;
+
+    std::shared_ptr<OpenGLRender> mGLRender;
+
 public:
     Rect mRect;
     FormatInfo mFormatInfo;
@@ -104,6 +112,15 @@ public:
     void init();
     void release();
 
+    std::shared_ptr<Surface> getSurface()
+    {
+        return mSurface;
+    }
+
+    std::shared_ptr<EglWrapper> getEglWrapper() {
+        return mEglWrapper;
+    }
+
     void draw();
     void onFrameDisplayed();
 
@@ -113,8 +130,8 @@ public:
     uint32_t mSerial;
     bool mPressed;
 
-    void pointerEnter(uint32_t serial, wl_surface *surface, wl_fixed_t sx, wl_fixed_t sy){ mSerial = serial;};
-    void pointerLeave(uint32_t serial, wl_surface *surface){mPressed = false;};
+    void pointerEnter(uint32_t serial, wl_surface *surface, wl_fixed_t sx, wl_fixed_t sy) { mSerial = serial; };
+    void pointerLeave(uint32_t serial, wl_surface *surface);
     void pointerMotion(uint32_t time, wl_fixed_t sx, wl_fixed_t sy);
     void pointerButton(uint32_t serial, uint32_t time, uint32_t button, bool pressed);
     void pointerAxis(uint32_t time, uint32_t axis, wl_fixed_t value){};

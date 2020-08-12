@@ -38,6 +38,9 @@ public:
 		mListener = listener;
 	}
 
+	void requestDraw(std::shared_ptr<SharedBuffer> sharedBuffer,
+					 FrameCallback callback = nullptr);
+
 private:
 
 	friend class ShellSurface;

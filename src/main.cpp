@@ -2,7 +2,7 @@
 
 #include "wayland/Display.hpp"
 
-#include "wayland/Activity.hpp"
+#include "Activity.hpp"
 
 using std::exception;
 using std::shared_ptr;

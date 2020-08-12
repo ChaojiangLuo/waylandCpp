@@ -40,6 +40,8 @@ public:
 
 	std::shared_ptr<Pointer> pointer();
 
+	wl_display* display();
+
 private:
 	const int cPoolEventTimeoutMs = 100;
 

@@ -17,7 +17,9 @@ set(SOURCES
 	src/wayland/Seat.cpp
 	src/wayland/Keyboard.cpp
 	src/wayland/Pointer.cpp
-	src/wayland/Activity.cpp
+	src/Activity.cpp
+	src/egl/EglWrapper.cpp
+	src/opengl/OpenGLRender.cpp
 )
 
 include_directories(
@@ -35,4 +37,4 @@ link_directories(
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} wayland-client pthread)
+target_link_libraries(${PROJECT_NAME} wayland-client pthread EGL GLESv2 wayland-egl)
